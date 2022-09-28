@@ -8,15 +8,15 @@ import jsTPS_Transaction from "../common/jsTPS.js";
  * @author ?
  */
 export default class RemoveSong_Transaction extends jsTPS_Transaction {
-  constructor(initApp, initIndex) {
+  constructor(initApp, initIndex, initTitle, initArtist, initYoutube) {
     //, initTitle, initArtist, initYoutube) {
     super();
     this.app = initApp;
     this.index = initIndex;
-    this.song = this.app.currentList.songs[this.index];
-    // this.title = initTitle;
-    // this.artist = initArtist;
-    // this.youTubeId = initYoutube;
+    this.title = initTitle;
+    this.artist = initArtist;
+    this.youTubeId = initYoutube;
+    //this.song = this.app.currentList.songs[this.index];
   }
 
   doTransaction() {
@@ -24,7 +24,7 @@ export default class RemoveSong_Transaction extends jsTPS_Transaction {
   }
 
   undoTransaction() {
-    let songNameRemove = this.song; //this.model.currentList.songs[this.index];
+    //let songNameRemove = this.song; //this.model.currentList.songs[this.index];
     //let removeT=this.model.currentList.songs[this.index].title;
     //let removeA = this.model.currentList.songs[this.index].artist;
     // let removeY = this.model.currentList.songs[this.index].youTubeId;
@@ -33,10 +33,14 @@ export default class RemoveSong_Transaction extends jsTPS_Transaction {
     // removeA.value=songNameRemove.artist;
     // removeY.value=songNameRemove.youTubeId;
 
-    this.model.currentList.songs.splice(this.index, 0, songNameRemove);
-    this.model.view.refreshPlaylist(this.model.currentList);
-    this.model.saveLists();
+  let oldSong = {
+    title: this.title,
+    artist: this.artist,
+    youTubeId: this.youTubeId,
+  };
 
-    //addSong(this.newIndex, this.oldIndex);
+   let list=this.app.state.currentList;
+   list.songs.splice(this.index, 0, oldSong);
+   this.app.setStateWithUpdatedList(list);
   }
 }

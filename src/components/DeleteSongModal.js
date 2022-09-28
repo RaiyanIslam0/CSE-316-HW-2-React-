@@ -1,20 +1,17 @@
-/*import React, { Component } from "react";
+import React, { Component } from "react";
 
-export default class DeleteListModal extends Component {
+export default class DeleteSongModal extends Component {
   render() {
-    const {listKeyPair,deleteListCallback,hideDeleteListModalCallback,
+    const {removeSongCallback,hideDeleteSongModalCallback,songName
     } = this.props;
     let name = "";
-    if (listKeyPair) {
-      name = listKeyPair.name;
-    }
     return (
       <div class="modal" id="delete-song-modal" data-animation="slideInOutLeft">
         <div class="modal-root" id="verify-delete-song-root">
           <div class="modal-north">Delete Song?</div>
           <div class="modal-center">
             <div class="modal-center-content">
-              Are you sure you wish to permanently delete the {name}?
+              Are you sure you wish to permanently delete the {songName} from the playlist?
             </div>
           </div>
           <div class="modal-south">
@@ -22,14 +19,14 @@ export default class DeleteListModal extends Component {
               type="button"
               id="delete-song-confirm-button"
               class="modal-button"
-              onClick={deleteListCallback}
+              onClick={removeSongCallback}
               value="Confirm"
             />
             <input
               type="button"
               id="delete-song-cancel-button"
               class="modal-button"
-              onClick={hideDeleteListModalCallback}
+              onClick={hideDeleteSongModalCallback}
               value="Cancel"
             />
           </div>
@@ -38,4 +35,3 @@ export default class DeleteListModal extends Component {
     );
   }
 }
-*/

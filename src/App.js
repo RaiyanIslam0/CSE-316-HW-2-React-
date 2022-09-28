@@ -8,9 +8,11 @@ import jsTPS from './common/jsTPS.js';
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import AddSong_Transaction from './transactions/AddSong_Transaction.js';
+import RemoveSong_Transaction from "./transactions/RemoveSong_Transaction.js";
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
+import DeleteSongModal from "./components/DeleteSongModal.js";
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
@@ -38,6 +40,10 @@ class App extends React.Component {
       listKeyPairMarkedForDeletion: null,
       currentList: null,
       sessionData: loadedSessionData,
+      index: -1,
+      title: "",
+      artist: "",
+      youTubeId: ""
     };
   }
   sortKeyNamePairsByName = (keyNamePairs) => {
@@ -272,22 +278,23 @@ class App extends React.Component {
     let transaction = new AddSong_Transaction(this);
     this.tps.addTransaction(transaction);
   };
-/*
+
   //remove song function
   removeSong(index) {
-    if (this.hasCurrentList()) {
-      let tempArray = this.currentList.songs; //.filter((song, index) => index !== fromIndex);
-      tempArray.splice(index, 1);
-      this.currentList.songs = tempArray;
-      this.setStateWithUpdatedList(list);
-      //this.view.refreshPlaylist(this.currentList);
-    }
-    this.saveLists();
-  }*/
+    let list = this.state.currentList;
+    list.songs.splice(index, 1);
+    this.setStateWithUpdatedList(list);
+  }
 
-  /*edit song function
+  addRemoveSongTransaction (index,title,artist,id)  {
+    let transaction = new RemoveSong_Transaction(this,index,title,artist,id);
+    this.tps.addTransaction(transaction);
+    this.hideDeleteSongModal();
+  };
+
+  //edit song function
   editSong = (index, title, artist, youTubeId) => {
-      let list = this.state.currentList;
+    let list = this.state.currentList;
     this.setState(
       (prevState) => ({
         listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
@@ -306,13 +313,6 @@ class App extends React.Component {
     this.setStateWithUpdatedList(list);
     this.hideEditModal();
   };
-*/
-
-
-
-
-
-
 
   // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
   undo = () => {
@@ -356,6 +356,54 @@ class App extends React.Component {
     let modal = document.getElementById("delete-list-modal");
     modal.classList.remove("is-visible");
   }
+/*
+  cancelSong() {
+    let modal = document.getElementById("delete-song-modal");
+    modal.classList.remove("is-visible");
+  }
+
+  deleteMarkedList = () => {
+    this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
+    this.hideDeleteListModal();
+  };
+  deleteSong = () =>{
+
+      this.cancelSong();
+  }*/
+  showDeleteSongModal() {
+    let modal = document.getElementById("delete-song-modal");
+    modal.classList.add("is-visible");
+  }
+
+  hideDeleteSongModal() {
+    let modal = document.getElementById("delete-song-modal");
+    modal.classList.remove("is-visible");
+  }
+
+  pointDeletion = (index) => {
+      let songName=this.state.currentList.songs[index].title;
+      this.setState(
+      (prevState) => ({
+        index: index,
+        title: songName,
+        sessionData: prevState.sessionData,
+      }),
+      () => {
+        // PROMPT THE USER
+        this.showDeleteSongModal();
+      }
+    );
+  };
+
+  removeSongHelper = () => {
+      let index=this.state.index;
+      let songName = this.state.currentList.songs[index];
+      this.addRemoveSongTransaction(index,songName.title,songName.artist,songName.youTubeId);
+  }
+
+
+  
+
   render() {
     let canAddSong = this.state.currentList !== null;
     let canUndo = this.tps.hasTransactionToUndo();
@@ -386,12 +434,18 @@ class App extends React.Component {
         <PlaylistCards
           currentList={this.state.currentList}
           moveSongCallback={this.addMoveSongTransaction}
+          deleteSongCallback={this.pointDeletion}
         />
         <Statusbar currentList={this.state.currentList} />
         <DeleteListModal
           listKeyPair={this.state.listKeyPairMarkedForDeletion}
           hideDeleteListModalCallback={this.hideDeleteListModal}
           deleteListCallback={this.deleteMarkedList}
+        />
+        <DeleteSongModal
+          songName={this.state.title}
+          removeSongCallback={this.removeSongHelper}
+          hideDeleteSongModalCallback={this.hideDeleteSongModal}
         />
       </div>
     );
