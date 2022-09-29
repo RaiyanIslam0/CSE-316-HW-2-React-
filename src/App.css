@@ -179,6 +179,15 @@ input {
   margin-top: 3px;
 }
 
+.preText{
+  font-size: 25px;
+  font-weight: 50%;
+}
+.textBox{
+  padding: 10px 10px;
+  font-size: 10px;
+}
+
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
 

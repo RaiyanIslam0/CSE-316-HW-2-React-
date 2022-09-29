@@ -54,11 +54,24 @@ export default class SongCard extends React.Component {
     this.props.moveCallback(sourceId, targetId);
   };
 
+  //HAVE TO DO SMTH TO EDIT
+  /* handleEditSong = (event) => {
+     event.preventDefault();
+     let number = this.getItemNum();
+     this.props.editCallback(number);
+  }*/
+
+  handleEditSong = (event) => {
+    event.preventDefault();
+    let number = this.getItemNum();
+    this.props.editCallback(number-1);
+  };
+
   handleDeleteSong = (event) => {
     event.preventDefault();
-    let number=this.getItemNum();
-    this.props.deleteCallback(number-1);
-  }
+    let number = this.getItemNum();
+    this.props.deleteCallback(number - 1);
+  };
 
   getItemNum = () => {
     return this.props.id.substring("playlist-song-".length);
@@ -82,6 +95,7 @@ export default class SongCard extends React.Component {
         onDragLeave={this.handleDragLeave}
         onDrop={this.handleDrop}
         draggable="true"
+        onDoubleClick={this.handleEditSong}
       >
         {num}.{" "}
         <a

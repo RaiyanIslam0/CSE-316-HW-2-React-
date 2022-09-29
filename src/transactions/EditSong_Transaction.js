@@ -1,4 +1,4 @@
-import jsTPS_Transaction from "../../common/jsTPS.js";
+import jsTPS_Transaction from "../common/jsTPS.js";
 /**
  * AddSong_Transaction
  *
@@ -8,35 +8,32 @@ import jsTPS_Transaction from "../../common/jsTPS.js";
  * @author ?
  */
 export default class EditSong_Transaction extends jsTPS_Transaction {
-  constructor(initModel, initIndex, initTitle, initArtist, initYoutube) {
+  constructor(initApp, initIndex, initTitle, initArtist, initYoutube) {
     super();
-    this.model = initModel;
+    this.app = initApp;
+    console.log(this.app);
     this.index = initIndex;
-    this.song = this.model.currentList.songs[this.index];
-    this.oldTitle = this.model.currentList.songs[this.index].title;
-    this.oldArtist = this.model.currentList.songs[this.index].artist;
-    this.oldYoutube = this.model.currentList.songs[this.index].youTubeId;
+    console.log("cons: " + this.index);
+    this.song = this.app.state.currentList.songs[this.index];
+    this.oldTitle = this.song.title;//app.state.currentList.songs[this.index].title;
+    this.oldArtist = this.song.artist;//app.state.currentList.songs[this.index].artist;
+    this.oldYoutube = this.song.youTubeId;//app.state.currentList.songs[this.index].youTubeId;
     this.title = initTitle;
     this.artist = initArtist;
     this.youTubeId = initYoutube;
   }
 
   doTransaction() {
-    this.model.editSong(this.index, this.title, this.artist, this.youTubeId);
+    console.log("trans: " + this.index);
+    console.log("trans: " + this.title);
+    this.app.editSong(this.index, this.title, this.artist, this.youTubeId);
   }
 
   undoTransaction() {
     //let oldTitle = this.model.currentList.songs[this.index].title;
     //let oldArtist = this.model.currentList.songs[this.index].artist;
     //let oldYoutube = this.model.currentList.songs[this.index].youTubeId;
-    this.model.editSong(
-      this.index,
-      this.oldTitle,
-      this.oldArtist,
-      this.oldYoutube
-    );
-
-    this.model.view.refreshPlaylist(this.model.currentList);
-    this.model.saveLists();
+    this.app.editSong(this.index,this.oldTitle,this.oldArtist,this.oldYoutube);
+    this.app.setStateWithUpdatedList(this.app.state.currentList);
   }
 }
