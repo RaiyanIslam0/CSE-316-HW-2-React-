@@ -12,7 +12,7 @@ export default class EditSongModal extends Component {
     let name = "";
     return (
       <div class="modal" id="edit-song-modal" data-animation="slideInOutLeft">
-        <div class="modal-root" id="verify-delete-song-root">
+        <div class="modal-root" id="verify-edit-song-root">
           <div class="modal-north">Edit Song</div>
           <div class="modal-center">
             <div class="modal-center-content">
@@ -30,14 +30,14 @@ export default class EditSongModal extends Component {
           <div class="modal-south">
             <input
               type="button"
-              id="delete-song-confirm-button"
+              id="edit-song-confirm-button"
               class="modal-button"
               onClick={editConfirmSongCallback}//this.handleConfirm}
               value="Confirm"
             />
             <input
               type="button"
-              id="delete-song-cancel-button"
+              id="edit-song-cancel-button"
               class="modal-button"
               onClick={hideEditSongModalCallback}
               value="Cancel"

@@ -191,6 +191,10 @@ input {
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
 
+#edit-song-modal{
+  
+}
+
 .modal {
   position: fixed;
   top: 0;

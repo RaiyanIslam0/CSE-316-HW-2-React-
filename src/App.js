@@ -490,7 +490,19 @@ class App extends React.Component {
   };
 
 
+componentDidMount =() => {
+    document.addEventListener("keydown", this.hkd )
+}
 
+
+hkd = (event) => {
+    if (event.ctrlKey && event.key === "z") {
+           this.undo();
+        }
+    else if (event.ctrlKey && event.key === "y") {
+            this.redo();
+        }
+}
 /*
    document.addEventListener("keydown", (event) => {
        if (event.ctrlKey && event.key === "z") {
