@@ -1,18 +1,12 @@
 import React, { Component } from "react";
 
 export default class EditSongModal extends Component {
-  handleConfirm = (event) => {
-    
-    let t = document.getElementById("titleBox").value;
-    let a = document.getElementById("artistBox").value;
-    let y = document.getElementById("youtubeBox").value;
-    console.log("handle: "+t);
-    console.log("handle: " + a);
-
-    this.props.editConfirmSongCallback(t, a, y);
-  };
+  
   render() {
-    const {editConfirmSongCallback,hideEditSongModalCallback,songName,
+    const {
+      editConfirmSongCallback,
+      hideEditSongModalCallback,
+      songName,
     } = this.props;
 
     let name = "";
@@ -38,7 +32,7 @@ export default class EditSongModal extends Component {
               type="button"
               id="delete-song-confirm-button"
               class="modal-button"
-              onClick={this.handleConfirm}
+              onClick={editConfirmSongCallback}//this.handleConfirm}
               value="Confirm"
             />
             <input
