@@ -211,7 +211,7 @@ class App extends React.Component {
         // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
         // THE TRANSACTION STACK IS CLEARED
         this.tps.clearAllTransactions();
-        //this.updateToolBarButton();
+        this.updateToolBarButton();
       }
     );
   };
@@ -228,7 +228,7 @@ class App extends React.Component {
         // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
         // THE TRANSACTION STACK IS CLEARED
         this.tps.clearAllTransactions();
-        //this.updateToolBarButton();
+        this.updateToolBarButton();
       }
     );
   };
@@ -244,7 +244,7 @@ class App extends React.Component {
         // UPDATING THE LIST IN PERMANENT STORAGE
         // IS AN AFTER EFFECT
         this.db.mutationUpdateList(this.state.currentList);
-        //this.updateToolBarButton();
+        this.updateToolBarButton();
       }
     );
   };
@@ -372,6 +372,12 @@ class App extends React.Component {
   showDeleteListModal() {
     let modal = document.getElementById("delete-list-modal");
     modal.classList.add("is-visible");
+    this.setState({
+      canModal: true,
+    });
+    //this.state(
+    //  canModal: true,
+    //)
   }
   // THIS FUNCTION IS FOR HIDING THE MODAL
   hideDeleteListModal() {
@@ -384,6 +390,9 @@ class App extends React.Component {
   showDeleteSongModal =() =>{
     let modal = document.getElementById("delete-song-modal");
     modal.classList.add("is-visible");
+    this.setState({
+      canModal: true,
+    });
     //this.disableAll();
   }
 
@@ -475,6 +484,10 @@ class App extends React.Component {
 
 
   updateToolBarButton=() =>{
+    if (this.state.canModal===true){
+      this.disableAll();
+    }
+    else{
     let canAddSong = this.state.currentList !== null;
     let canUndo = this.tps.hasTransactionToUndo();
     let canRedo = this.tps.hasTransactionToRedo();
@@ -484,7 +497,8 @@ class App extends React.Component {
       canUbdo: canUndo,
       canRedo: canRedo,
       canClose: canClose,
-    })
+      canModal:false
+    });}
   }
 
   disableButton(id) {
