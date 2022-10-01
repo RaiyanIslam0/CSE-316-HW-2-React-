@@ -341,7 +341,7 @@ class App extends React.Component {
 
       // MAKE SURE THE LIST GETS PERMANENTLY UPDATED
       this.db.mutationUpdateList(this.state.currentList);
-      //this.updateToolBarButton();
+      this.updateToolBarButton();
     }
   };
   // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING A REDO
@@ -351,7 +351,7 @@ class App extends React.Component {
 
       // MAKE SURE THE LIST GETS PERMANENTLY UPDATED
       this.db.mutationUpdateList(this.state.currentList);
-      //this.updateToolBarButton();
+      this.updateToolBarButton();
     }
   };
   markListForDeletion = (keyPair) => {
@@ -375,6 +375,8 @@ class App extends React.Component {
     this.setState({
       canModal: true,
     });
+    this.setModal(true);
+    this.disableAll();
     //this.state(
     //  canModal: true,
     //)
@@ -383,6 +385,8 @@ class App extends React.Component {
   hideDeleteListModal() {
     let modal = document.getElementById("delete-list-modal");
     modal.classList.remove("is-visible");
+    this.updateToolBarButton();
+    this.setModal(false);
   }
  
 
@@ -390,15 +394,17 @@ class App extends React.Component {
   showDeleteSongModal =() =>{
     let modal = document.getElementById("delete-song-modal");
     modal.classList.add("is-visible");
-    this.setState({
-      canModal: true,
-    });
+    this.setModal(true);
+    this.disableAll();
+
     //this.disableAll();
   }
 
   hideDeleteSongModal =()=> {
     let modal = document.getElementById("delete-song-modal");
     modal.classList.remove("is-visible");
+    this.updateToolBarButton();
+    this.setModal(false);
     //this.updateToolBarButton();
   }
 
@@ -446,12 +452,15 @@ class App extends React.Component {
       index
     ].youTubeId;
 
-    //this.disableAll();
+    this.setModal(true);
+    this.disableAll();
   }
 
   hideEditSongModal=() =>{
     let modal = document.getElementById("edit-song-modal");
     modal.classList.remove("is-visible");
+    this.updateToolBarButton();
+    this.setModal(false);
     //this.updateToolBarButton();
   }
  
@@ -484,10 +493,10 @@ class App extends React.Component {
 
 
   updateToolBarButton=() =>{
-    if (this.state.canModal===true){
-      this.disableAll();
-    }
-    else{
+    //if (this.state.canModal===true){
+    //  this.disableAll();
+    //}
+    //else{
     let canAddSong = this.state.currentList !== null;
     let canUndo = this.tps.hasTransactionToUndo();
     let canRedo = this.tps.hasTransactionToRedo();
@@ -498,7 +507,7 @@ class App extends React.Component {
       canRedo: canRedo,
       canClose: canClose,
       canModal:false
-    });}
+    });//}
   }
 
   disableButton(id) {
@@ -515,6 +524,12 @@ class App extends React.Component {
     this.disableButton("close-button");
 
   }
+
+  setModal = (boo) => {
+    this.setState({
+      canModal: boo,
+    })
+  }
 /*
 getModalbool =(boo)=>{
   this.setState(
@@ -522,10 +537,10 @@ getModalbool =(boo)=>{
   )
 }*/
   render() {
-    let canAddSong = this.state.currentList !== null;
-    let canUndo = this.tps.hasTransactionToUndo();
-    let canRedo = this.tps.hasTransactionToRedo();
-    let canClose = this.state.currentList !== null;
+    //let canAddSong = this.state.currentList !== null;
+    //let canUndo = this.tps.hasTransactionToUndo();
+    //let canRedo = this.tps.hasTransactionToRedo();
+    //let canClose = this.state.currentList !== null;
     let listAdd = this.state.currentList === null;
     return (
       <div id="root">
@@ -542,10 +557,10 @@ getModalbool =(boo)=>{
           renameListCallback={this.renameList}
         />
         <EditToolbar
-          canAddSong={canAddSong} //this.state.canAddSong}
-          canUndo={canUndo} //this.state.canUndo}
-          canRedo={canRedo} //this.state.canRedo}
-          canClose={canClose} //this.state.canClose}
+          canAddSong={this.state.canAddSong && !this.state.canModal} //this.state.canAddSong}
+          canUndo={this.state.canUndo && !this.state.canModal} //this.state.canUndo}
+          canRedo={this.state.canRedo && !this.state.canModal} //this.state.canRedo}
+          canClose={this.state.canClose && !this.state.canModal} //this.state.canClose}
           undoCallback={this.undo}
           redoCallback={this.redo}
           closeCallback={this.closeCurrentList}
