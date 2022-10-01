@@ -2,7 +2,10 @@ import React, { Component } from "react";
 
 export default class DeleteSongModal extends Component {
   render() {
-    const {removeSongCallback,hideDeleteSongModalCallback,songName
+    const {
+      removeSongCallback,
+      hideDeleteSongModalCallback,
+      songName,
     } = this.props;
     let name = "";
     return (
@@ -11,7 +14,8 @@ export default class DeleteSongModal extends Component {
           <div class="modal-north">Delete Song?</div>
           <div class="modal-center">
             <div class="modal-center-content">
-              Are you sure you wish to permanently delete the {songName} from the playlist?
+              Are you sure you wish to permanently delete the {songName} from
+              the playlist?
             </div>
           </div>
           <div class="modal-south">

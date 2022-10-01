@@ -64,7 +64,7 @@ export default class SongCard extends React.Component {
   handleEditSong = (event) => {
     event.preventDefault();
     let number = this.getItemNum();
-    this.props.editCallback(this.getItemNum());//number-1);
+    this.props.editCallback(this.getItemNum()); //number-1);
   };
 
   handleDeleteSong = (event) => {

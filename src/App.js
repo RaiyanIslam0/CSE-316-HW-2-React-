@@ -46,6 +46,13 @@ class App extends React.Component {
       title: "",
       artist: "",
       youTubeId: "",
+
+      canAddSong: false,
+      canUndo: false,
+      canRedo: false,
+      canClose: false,
+
+      canModal: false,
     };
   }
   sortKeyNamePairsByName = (keyNamePairs) => {
@@ -119,6 +126,7 @@ class App extends React.Component {
     );
     let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
     if (keyIndex >= 0) newKeyNamePairs.splice(keyIndex, 1);
+    this.tps.clearAllTransactions();
 
     // AND FROM OUR APP STATE
     this.setState(
@@ -203,6 +211,7 @@ class App extends React.Component {
         // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
         // THE TRANSACTION STACK IS CLEARED
         this.tps.clearAllTransactions();
+        //this.updateToolBarButton();
       }
     );
   };
@@ -219,10 +228,11 @@ class App extends React.Component {
         // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
         // THE TRANSACTION STACK IS CLEARED
         this.tps.clearAllTransactions();
+        //this.updateToolBarButton();
       }
     );
   };
-  setStateWithUpdatedList(list) {
+  setStateWithUpdatedList = (list) => {
     this.setState(
       (prevState) => ({
         listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
@@ -234,9 +244,10 @@ class App extends React.Component {
         // UPDATING THE LIST IN PERMANENT STORAGE
         // IS AN AFTER EFFECT
         this.db.mutationUpdateList(this.state.currentList);
+        //this.updateToolBarButton();
       }
     );
-  }
+  };
   getPlaylistSize = () => {
     return this.state.currentList.songs.length;
   };
@@ -271,7 +282,7 @@ class App extends React.Component {
 
   //This function adds a song in the current list
 
-  addSong() {
+  addSong = () => {
     let list = this.state.currentList;
     let newSong = {
       title: "Untitled",
@@ -280,7 +291,7 @@ class App extends React.Component {
     };
     list.songs.push(newSong);
     this.setStateWithUpdatedList(list);
-  }
+  };
 
   addAddSongTransaction = () => {
     let transaction = new AddSong_Transaction(this);
@@ -288,13 +299,13 @@ class App extends React.Component {
   };
 
   //remove song function
-  removeSong(index) {
+  removeSong = (index) => {
     let list = this.state.currentList;
     list.songs.splice(index, 1);
     this.setStateWithUpdatedList(list);
-  }
+  };
 
-  addRemoveSongTransaction(index, title, artist, id) {
+  addRemoveSongTransaction = (index, title, artist, id) => {
     let transaction = new RemoveSong_Transaction(
       this,
       index,
@@ -304,26 +315,16 @@ class App extends React.Component {
     );
     this.tps.addTransaction(transaction);
     this.hideDeleteSongModal();
-  }
-  
+  };
 
   // EDIT SONG
   editSong = (indexE, title, artist, youTubeId) => {
-    this.setState(
-      (prevState) => ({
-        listKeyPairMarkedForDeletion: prevState.listKeyPairMarkedForDeletion,
-        currentList: prevState.currentList.songs.splice(indexE, 1, {
-          title: title,
-          artist: artist,
-          youTubeId: youTubeId,
-        }),
-        sessionData: this.state.sessionData,
-        index: indexE,
-      }),
-      () => {
-        this.db.mutationUpdateList(this.state.currentList);
-      }
-    );
+    this.state.currentList.songs.splice(indexE, 1, {
+      title: title,
+      artist: artist,
+      youTubeId: youTubeId,
+    });
+
     this.setStateWithUpdatedList(this.state.currentList);
     this.hideEditSongModal();
   };
@@ -340,6 +341,7 @@ class App extends React.Component {
 
       // MAKE SURE THE LIST GETS PERMANENTLY UPDATED
       this.db.mutationUpdateList(this.state.currentList);
+      //this.updateToolBarButton();
     }
   };
   // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING A REDO
@@ -349,6 +351,7 @@ class App extends React.Component {
 
       // MAKE SURE THE LIST GETS PERMANENTLY UPDATED
       this.db.mutationUpdateList(this.state.currentList);
+      //this.updateToolBarButton();
     }
   };
   markListForDeletion = (keyPair) => {
@@ -375,30 +378,19 @@ class App extends React.Component {
     let modal = document.getElementById("delete-list-modal");
     modal.classList.remove("is-visible");
   }
-  /*
-  cancelSong() {
-    let modal = document.getElementById("delete-song-modal");
-    modal.classList.remove("is-visible");
-  }
-
-  deleteMarkedList = () => {
-    this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
-    this.hideDeleteListModal();
-  };
-  deleteSong = () =>{
-
-      this.cancelSong();
-  }*/
+ 
 
   //REMOVE SONG FUNCTION FOR MODAL
-  showDeleteSongModal() {
+  showDeleteSongModal =() =>{
     let modal = document.getElementById("delete-song-modal");
     modal.classList.add("is-visible");
+    //this.disableAll();
   }
 
-  hideDeleteSongModal() {
+  hideDeleteSongModal =()=> {
     let modal = document.getElementById("delete-song-modal");
     modal.classList.remove("is-visible");
+    //this.updateToolBarButton();
   }
 
   pointDeletion = (index) => {
@@ -429,51 +421,31 @@ class App extends React.Component {
 
   //EDIT SONG FUNCTIONS FOR MODAL
 
-  showEditSongModal(index) {
+  showEditSongModal=(index) =>{
     let modal = document.getElementById("edit-song-modal");
     modal.classList.add("is-visible");
     //let t = document.getElementById("titleBox").value;
     //let a = document.getElementById("artistBox").value;
     //let y= document.getElementById("youtubeBox").value;
-    document.getElementById("titleBox").value = this.state.currentList.songs[index].title;
-    document.getElementById("artistBox").value = this.state.currentList.songs[index].artist;
-    document.getElementById("youtubeBox").value = this.state.currentList.songs[index].youTubeId;
+    document.getElementById("titleBox").value = this.state.currentList.songs[
+      index
+    ].title;
+    document.getElementById("artistBox").value = this.state.currentList.songs[
+      index
+    ].artist;
+    document.getElementById("youtubeBox").value = this.state.currentList.songs[
+      index
+    ].youTubeId;
+
+    //this.disableAll();
   }
 
-  hideEditSongModal() {
+  hideEditSongModal=() =>{
     let modal = document.getElementById("edit-song-modal");
     modal.classList.remove("is-visible");
+    //this.updateToolBarButton();
   }
-  /*
-  pointEdit = (index) => {
-    //let songName = this.state.currentList.songs[index].title;
-    //let songT=songName.title;
-    //let songA=songName.artist;
-    //let songY=songName.youTubeId;
-    let songT = this.state.currentList.songs[index].title;
-    let songA = this.state.currentList.songs[index].artist;
-    let songY = this.state.currentList.songs[index].youTubeId;
-    this.setState(
-      (prevState) => ({
-        index: index,
-        title: songT,
-        artist: songA,
-        youTubeId: songY,
-        sessionData: prevState.sessionData,
-      }),
-      () => {
-        // PROMPT THE USER
-        this.showEditSongModal();
-      }
-    );
-  };
-  /*
-  editSongHelper = (t,a,y) => {
-    let index = this.state.index;
-    let songName = this.state.currentList.songs[index];
-    this.addEditSongTransaction(index,songName.title,songName.artist,songName.youTubeId);
-  };
-*/
+ 
 
   pointEdit = (indexE) => {
     this.setState(
@@ -489,43 +461,65 @@ class App extends React.Component {
     );
   };
 
+  componentDidMount = () => {
+    document.addEventListener("keydown", this.hkd);
+  };
 
-componentDidMount =() => {
-    document.addEventListener("keydown", this.hkd )
-}
-
-
-hkd = (event) => {
+  hkd = (event) => {
     if (event.ctrlKey && event.key === "z") {
-           this.undo();
-        }
-    else if (event.ctrlKey && event.key === "y") {
-            this.redo();
-        }
-}
-/*
-   document.addEventListener("keydown", (event) => {
-       if (event.ctrlKey && event.key === "z") {
-           this.undo();
-        }
-    });
-    
-    document.addEventListener("keydown", (event) => {
-        if (event.ctrlKey && event.key === "y") {
-            this.redo();
-        }
-    });
+      this.undo();
+    } else if (event.ctrlKey && event.key === "y") {
+      this.redo();
+    }
+  };
 
-*/
+
+  updateToolBarButton=() =>{
+    let canAddSong = this.state.currentList !== null;
+    let canUndo = this.tps.hasTransactionToUndo();
+    let canRedo = this.tps.hasTransactionToRedo();
+    let canClose = this.state.currentList !== null;
+    this.setState({
+      canAddSong: canAddSong,
+      canUbdo: canUndo,
+      canRedo: canRedo,
+      canClose: canClose,
+    })
+  }
+
+  disableButton(id) {
+    let button = document.getElementById(id);
+    button.classList.add("disabled");
+    button.disabled = true;
+  }
+
+
+  disableAll(){
+    this.disableButton("add-song-button");
+    this.disableButton("undo-button");
+    this.disableButton("redo-button");
+    this.disableButton("close-button");
+
+  }
+/*
+getModalbool =(boo)=>{
+  this.setState(
+    canModal: boo,
+  )
+}*/
   render() {
     let canAddSong = this.state.currentList !== null;
     let canUndo = this.tps.hasTransactionToUndo();
     let canRedo = this.tps.hasTransactionToRedo();
     let canClose = this.state.currentList !== null;
+    let listAdd = this.state.currentList === null;
     return (
       <div id="root">
         <Banner />
-        <SidebarHeading createNewListCallback={this.createNewList} />
+        <SidebarHeading
+          createNewListCallback={this.createNewList}
+          listAdd={listAdd}
+        />
         <SidebarList
           currentList={this.state.currentList}
           keyNamePairs={this.state.sessionData.keyNamePairs}
@@ -534,10 +528,10 @@ hkd = (event) => {
           renameListCallback={this.renameList}
         />
         <EditToolbar
-          canAddSong={canAddSong}
-          canUndo={canUndo}
-          canRedo={canRedo}
-          canClose={canClose}
+          canAddSong={canAddSong} //this.state.canAddSong}
+          canUndo={canUndo} //this.state.canUndo}
+          canRedo={canRedo} //this.state.canRedo}
+          canClose={canClose} //this.state.canClose}
           undoCallback={this.undo}
           redoCallback={this.redo}
           closeCallback={this.closeCurrentList}

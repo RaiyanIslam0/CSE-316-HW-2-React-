@@ -153,6 +153,11 @@ body {
   cursor: not-allowed;
 }
 
+.toolbar-button-disabled {
+  opacity: 0.25; 
+  cursor: not-allowed;
+}
+
 .playlister-song, .playlister-song-dragged-to { 
   /* display:flex; */
   align-items: center;
@@ -190,10 +195,6 @@ input {
 
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
-
-#edit-song-modal{
-  
-}
 
 .modal {
   position: fixed;
